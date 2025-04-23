@@ -1,0 +1,19 @@
+{
+    "catalog":[
+        {
+            "name": "computers",
+            "path": "computers",
+            "catalogs": [
+                {
+                    "name": "notebook", "path": "notebook", "catalogs":
+                        [{ "name": "mac", "path": "mac" },
+                        { "name": "mac", "path": "mac" }
+                        ]
+                },
+                { "name": "pc", "path": "pc"},
+                { "name": "miniPC", "path": "minipc"},
+                { "name": "gameing", "path": "gaming"}
+            ]
+        }
+    ]
+}
