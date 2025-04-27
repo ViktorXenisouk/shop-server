@@ -16,11 +16,11 @@ const json = {
     },
     basketInfo: {
         required: false,
-        type: Array<{id:String,count:Number}>
+        type: [{id:String,count:Number}]
     },
     favourite:{
         required:false,
-        type:Array<{id:String,count:Number}>
+        type:[String]
     },
     level:{
         type:Number,

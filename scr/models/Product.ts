@@ -12,11 +12,11 @@ const json = {
         required: true,
     },
     tags:{
-        type: Array<String>,
+        type: [String],
         required: true,
     },
     paths: {
-        type: Array<String>,
+        type: [String],
         required: true
     },
 }
