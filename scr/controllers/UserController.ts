@@ -28,6 +28,11 @@ const register: RequestHandler = async(req, res): Promise<any> => {
 
         const oldUser = await UserModel.findOne({ email:email})
 
+        if(oldUser){
+            res.status(500).json({message:'user alredy exist'})
+            return
+        }
+
         const doc = new UserModel({
             email: req.body.email,
             username: req.body.username,
