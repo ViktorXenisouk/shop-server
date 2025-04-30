@@ -1,10 +1,10 @@
 import express from "express"
 import mongoose from 'mongoose';
-import * as UserController from "./controllers/UserController";
-import { registerValidation, loginValidation } from "./validations/userValidations";
-import * as ProductController from "./controllers/ProductController"
 import { checkAuth } from "./utils/checkAuth";
-import * as ProductValidator from './validations/productValidations';
+import { checkIsAdminLvl1,checkIsAdminLvl2,checkIsAdminLvl3 } from "./utils/checkAdmin";
+import {AdminValidations,CatalogValidations,ProductValidations,UserValidations} from "./validations/index"
+import {AdminController,CatalogController,ProductController,UserController} from "./controllers/index"
+
 
 const HOST = 'localhost'
 const PORT = 4444
@@ -33,32 +33,36 @@ app.listen(PORT, (error) => {
 });
 
 //login reservation logic
-app.post('/auth/register', registerValidation, UserController.register)
-app.get('/auth/login', loginValidation, UserController.login)
+app.post('/auth/register', UserValidations.register, UserController.register)
+app.get('/auth/login', UserValidations.login, UserController.login)
 app.get('/auth/getUser', checkAuth, UserController.getMe)
 // public API
-app.get('/products',ProductController.search)
-app.get('/category')
+app.get('/products/search',ProductController.search)
+app.get('/products/:id',ProductController.getProductById)
+app.get('/category',CatalogController.get)
+
+//user logic
+app.get('/user/edit',UserValidations.editMe,checkAuth,UserController.editMe)
 
 // admin login
-app.get('/admin/login');
+app.get('/admin/login',AdminValidations.login,AdminController.login);
 
 //admin LVL=1
-app.get('/admin/category/create')
-app.get('/admin/category/update')
-app.get('/admin/category/remove')
+app.get('/admin/category/create',checkIsAdminLvl1,CatalogValidations.create,)
+app.get('/admin/category/edit',checkIsAdminLvl1,CatalogValidations.edit,)
+app.get('/admin/category/remove',checkIsAdminLvl1,CatalogValidations.remove,)
 
 //admin LVL=1
-app.get('/admin/products/create',ProductValidator.addValidation, ProductController.create)
-app.get('/admin/products/update',ProductController.update)
-app.get('/admin/products/remove')
+app.get('/admin/products/create',checkIsAdminLvl1,ProductValidations.create, ProductController.create)
+app.get('/admin/products/edit',checkIsAdminLvl1,ProductValidations.edit,ProductController.edit,checkIsAdminLvl1)
+app.get('/admin/products/remove',checkIsAdminLvl1,ProductValidations.remove,ProductController.remove)
 
 //admin LVL=2
-app.get('/admin/users/block')
-app.get('/admin/users/remove')
-app.get('/admin/users/update')
+app.get('/admin/users/block',UserValidations.block,UserController.setIsBlocked)
+app.get('/admin/users/remove',checkIsAdminLvl2,UserController.remove)
+app.get('/admin/users/edit',checkIsAdminLvl2,ProductValidations.edit,UserController.edit)
 
 //admin LVL=3
-app.get('/admin/admins/create')
-app.get('/admin/admins/remove')
-app.get('/admin/admins/update')
+app.get('/admin/admins/create',checkIsAdminLvl3,AdminValidations.create,AdminController.create)
+app.get('/admin/admins/remove',checkIsAdminLvl3,AdminValidations.remove,AdminController.remove)
+app.get('/admin/admins/edit',checkIsAdminLvl3,AdminController.editMe)

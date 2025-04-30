@@ -1,7 +1,21 @@
 import {body} from 'express-validator';
 
-export const addCategoryValidation = [
+const create = [
     body('name').isString(),
-    body('path').isString,
+    body('path').isString(),
     body('discription').isString(),
+    body('imgUrl').optional().isURL()
 ];
+
+const remove = [
+    body('path').isString()
+]
+
+const edit = [
+    body('path').isString(),
+    body('name').optional().isString(),
+    body('discription').optional().isString(),
+    body('imgUrl').optional().isString(),
+]
+
+export {create,remove,edit}
