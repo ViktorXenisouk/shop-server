@@ -1,32 +1,53 @@
 import { RequestHandler } from "express";
 import ProductModel from ".././models/Product"
-import { splitPath } from "../core/splitPath";
+import { splitPath } from "../utils/splitPath";
 
 const getProductById: RequestHandler = async (req, res): Promise<any> => {
-    const id = req.body.id
+    try {
+        const { id } = req.params
 
-    const product = await ProductModel.findById(id)
+        const product = await ProductModel.findById(id)
 
-    if (!product) {
-        return res.status(404).json({
-            message: 'product no exist'
-        })
+        if (product) return res.status(404).json({ message: 'can not find product' })
+
+        res.status(200).json({ item: product })
+    }
+    catch (err) {
+        res.status(500).json({ message: 'some error' })
     }
 }
 
-type FindObjectOptions = {
-    name: string,
-    tag: string[],
-    category: string,
+const search: RequestHandler = async (req, res): Promise<any> => {
+    try {
+        const category = req.query.category as string;
+        let tags = req.query.tags as any;
+
+        if(tags){
+            tags = tags.split(',');
+        }
+
+        const cat = category ? { $elemMatch: { $eq: category } } : undefined
+        const tg = tags ? { $elemMatch: { $in: [...tags] } } : undefined
+    
+        const json = {} as any
+
+        if (cat) json.paths = cat
+        if (tg) json.tags = tg
+
+        const products = await ProductModel.find(json)
+
+        if(!products){
+            return res.status(404).json({message:'do not find products'})
+        }
+
+        res.status(200).json({ products })
+    }
+    catch (err) {
+        res.status(500).json({ message: 'some error' })
+    }
 }
 
-const find: RequestHandler = (req, res) => {
-    const path = req.params[0];  // Все, что после "/products"
-    const { name, tags } = req.query;
-
-}
-
-const add: RequestHandler = async (req, res): Promise<any> => {
+const create: RequestHandler = async (req, res): Promise<any> => {
     const { name, discription, tags, path, imgs } = req.body
 
     try {
@@ -37,12 +58,6 @@ const add: RequestHandler = async (req, res): Promise<any> => {
         const paths = splitPath(path)
 
         const product = new ProductModel({
-            name, discription, paths, tags, imgs
-        })
-
-        paths.push(paths[paths.length - 1] + '/' + product.id)
-
-        product.$set({
             name, discription, paths, tags, imgs
         })
 
@@ -58,7 +73,7 @@ const add: RequestHandler = async (req, res): Promise<any> => {
 
 const update: RequestHandler = async (req, res): Promise<any> => {
     try {
-        const { name, discription, tags,path,id } = req.body;
+        const { name, discription, tags, path, id } = req.body;
 
         const item = await ProductModel.findById(id)
 
@@ -78,7 +93,6 @@ const update: RequestHandler = async (req, res): Promise<any> => {
 
         if (path) {
             const paths = splitPath(path)
-            paths.push(path[path.length - 1] + '/' + item.id)
             item.paths = paths
         }
 
@@ -91,4 +105,4 @@ const update: RequestHandler = async (req, res): Promise<any> => {
     }
 }
 
-export { add, update }
+export { create, update, search, getProductById }

@@ -1,6 +1,5 @@
 import fs from 'fs'
-import { splitPath } from '../core/splitPath';
-import CatalogModel from "../models/Catalog"
+import { splitPath } from '../utils/splitPath';
 
 type Product = {
     name: string;

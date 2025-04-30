@@ -19,6 +19,10 @@ const json = {
         type: [String],
         required: true
     },
+    imgs:{
+        type:[String],
+        required:false
+    }
 }
 
 const ProductSchema = new mongoose.Schema(json)

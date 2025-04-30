@@ -22,10 +22,9 @@ const json = {
         required:false,
         type:[String]
     },
-    level:{
-        type:Number,
-        required:false,
-        default:0,
+    isBlocked:{
+        type:Boolean,
+        default:false
     }
 }
 
