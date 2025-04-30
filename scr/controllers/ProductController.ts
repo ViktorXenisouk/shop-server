@@ -1,6 +1,7 @@
 import { RequestHandler } from "express";
 import ProductModel from ".././models/Product"
 import { splitPath } from "../utils/splitPath";
+import { validationResult } from 'express-validator';
 
 const getProductById: RequestHandler = async (req, res): Promise<any> => {
     try {
@@ -71,7 +72,7 @@ const create: RequestHandler = async (req, res): Promise<any> => {
 
 }
 
-const update: RequestHandler = async (req, res): Promise<any> => {
+const edit: RequestHandler = async (req, res): Promise<any> => {
     try {
         const { name, discription, tags, path, id } = req.body;
 
@@ -105,4 +106,28 @@ const update: RequestHandler = async (req, res): Promise<any> => {
     }
 }
 
-export { create, update, search, getProductById }
+const remove : RequestHandler = async (req: Request & any, res) : Promise<any> => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            errors: errors.array()
+        });
+    }
+    try{
+        const {id} = req.body;
+
+        const product = await ProductModel.findByIdAndDelete(id);
+
+        if(!product) return res.status(400).json({success:false,message:'no good'})
+
+        res.status(200).json({success:true,message:'good'})
+    }
+    catch(err){
+        return res.status(500).json({
+            message: 'no entry',
+            errors: err
+        })
+    }
+}
+
+export { create, edit, search, getProductById,remove}

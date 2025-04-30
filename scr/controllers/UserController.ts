@@ -52,6 +52,12 @@ const register: RequestHandler = async (req, res): Promise<any> => {
 };
 
 const login: RequestHandler = async (req, res): Promise<any> => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            errors: errors.array()
+        });
+    }
     try {
         const user = await UserModel.findOne({ email: req.body.email });
 
@@ -120,7 +126,13 @@ const getMe: RequestHandler = async (req: Request & any, res): Promise<any> => {
     }
 };
 
-const updateMe: RequestHandler = async (req: Request & any, res): Promise<any> => {
+const editMe: RequestHandler = async (req: Request & any, res): Promise<any> => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            errors: errors.array()
+        });
+    }
     try {
         if (req.userId) {
             const user = await UserModel.findById(req.userId);
@@ -162,15 +174,92 @@ const updateMe: RequestHandler = async (req: Request & any, res): Promise<any> =
     }
 }
 
-const setIsBlocked: RequestHandler = (req, res) => {
+const setIsBlocked: RequestHandler = async (req, res): Promise<any> => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            errors: errors.array()
+        });
+    }
     try {
+        const { id, blocked } = req.body
 
+        const user = await UserModel.findById(id);
+
+        if (!user) return res.status(404).json({ message: 'user no found' })
+
+        user.isBlocked = blocked
+
+        await user.save()
+
+        res.status(200).json({ message: `user ${user.username} is ${user.isBlocked}` })
     }
     catch (err) {
-
+        res.status(500).json({ message: 'some error' })
     }
 }
 
+const remove: RequestHandler = async (req: Request & any, res): Promise<any> => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            errors: errors.array()
+        });
+    }
+    try {
+        const { id } = req.body;
+
+        const user = await UserModel.findByIdAndDelete(id);
+
+        if (!user) return res.status(400).json({ success: false, message: 'no good' })
+
+        res.status(200).json({ success: true, message: 'good' })
+    }
+    catch (err) {
+        return res.status(500).json({
+            message: 'no entry',
+            errors: err
+        })
+    }
+}
+
+const edit: RequestHandler = async (req: Request & any, res): Promise<any> => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            errors: errors.array()
+        });
+    }
+    try {
+        const { username, email, password, id } = req.body
+        const user = await UserModel.findById(id);
+
+        if (!user) {
+            return res.status(404).json({
+                message: 'user no exist'
+            })
+        }
 
 
-export { register, login, getMe, updateMe }
+        if (username) user.username = username;
+        if (email) {
+            const u = await UserModel.find({ email: email })
+            if (!u) {
+                user.email = email
+            }
+        }
+        if (password) {
+            const salt = bcrypt.genSaltSync(10);
+            const hash = bcrypt.hashSync(password, salt);
+            user.passwordHash = hash;
+        }
+        user.save()
+    }
+    catch (err) {
+        return res.status(500).json({
+            message: 'no entry',
+            errors: err
+        })
+    }
+}
+export { register, login, getMe, editMe, setIsBlocked, remove,edit }

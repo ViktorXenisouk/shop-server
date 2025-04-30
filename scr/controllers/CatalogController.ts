@@ -1,7 +1,8 @@
 import { RequestHandler, response } from "express";
 import * as catalog from "../utils/catalog"
+import { validationResult } from 'express-validator';
 
-const getCatalogs: RequestHandler = async (req, res) => {
+const get: RequestHandler = async (req, res) => {
     try {
         const catalogs = catalog.getPublicCatalog()
         res.status(200).json({ data: catalogs })
@@ -14,6 +15,12 @@ const getCatalogs: RequestHandler = async (req, res) => {
 }
 
 const addOne: RequestHandler = async (req, res): Promise<any> => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            errors: errors.array()
+        });
+    }
     const { name, discription, path } = req.body;
 
     try {
@@ -30,7 +37,13 @@ const addOne: RequestHandler = async (req, res): Promise<any> => {
     }
 }
 
-const deleteOne: RequestHandler = async (req, res): Promise<any> => {
+const remove: RequestHandler = async (req, res): Promise<any> => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            errors: errors.array()
+        });
+    }
     const { path } = req.body;
     try {
         const result = catalog.removeByPath(path)
@@ -47,7 +60,13 @@ const deleteOne: RequestHandler = async (req, res): Promise<any> => {
     }
 }
 
-const updateCategory: RequestHandler = (req,res) => {
+const edit: RequestHandler = async (req,res) : Promise<any> => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            errors: errors.array()
+        });
+    }
     const { path,discription,name } = req.body;
     try {
         const result = catalog.editByPath(path,{name})
@@ -63,4 +82,4 @@ const updateCategory: RequestHandler = (req,res) => {
     }
 }
 
-export {getCatalogs,addOne,deleteOne,updateCategory}
+export {get,addOne,remove,edit}

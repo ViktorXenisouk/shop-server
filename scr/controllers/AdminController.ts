@@ -2,8 +2,15 @@ import { RequestHandler } from "express";
 import AdminModel from "../models/Admin"
 import bcrypt from 'bcrypt';
 import jsonwebtoken from 'jsonwebtoken';
+import { validationResult, body } from 'express-validator';
 
 const login: RequestHandler = async (req, res): Promise<any> => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            errors: errors.array()
+        });
+    }
     try {
         const user = await AdminModel.findOne({ name: req.body.name });
 
@@ -38,7 +45,13 @@ const login: RequestHandler = async (req, res): Promise<any> => {
     }
 };
 
-const createAdmin: RequestHandler = async (req, res): Promise<any> => {
+const create: RequestHandler = async (req, res): Promise<any> => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            errors: errors.array()
+        });
+    }
     try {
         const { name, email, password, imgUrl, lvl } = req.body
         const salt = bcrypt.genSaltSync(10);
@@ -79,7 +92,13 @@ const createAdmin: RequestHandler = async (req, res): Promise<any> => {
     }
 };
 
-const updateMe: RequestHandler = async (req: Request & any, res) : Promise<any> => {
+const editMe: RequestHandler = async (req: Request & any, res) : Promise<any> => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            errors: errors.array()
+        });
+    }
     try {
         if (req.userId) {
             const user = await AdminModel.findById(req.userId);
@@ -122,7 +141,28 @@ const updateMe: RequestHandler = async (req: Request & any, res) : Promise<any> 
 }
 
 const remove : RequestHandler = async (req: Request & any, res) : Promise<any> => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            errors: errors.array()
+        });
+    }
 
+    try{
+        const {id} = req.body;
+
+        const user = await AdminModel.findByIdAndDelete(id);
+
+        if(!user) return res.status(400).json({success:false,message:'no good'})
+
+        res.status(200).json({success:true,message:'good'})
+    }
+    catch(err){
+        return res.status(500).json({
+            message: 'no entry',
+            errors: err
+        })
+    }
 }
 
-export { login, createAdmin, }
+export { login, create, editMe,remove,}
