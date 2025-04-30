@@ -1,9 +1,9 @@
-import CatalogModel from "../models/Catalog"
 import { RequestHandler, response } from "express";
+import * as catalog from "../utils/catalog"
 
 const getCatalogs: RequestHandler = async (req, res) => {
     try {
-        const catalogs = await CatalogModel.find();
+        const catalogs = catalog.getPublicCatalog()
         res.status(200).json({ data: catalogs })
     }
     catch (err) {
@@ -13,43 +13,54 @@ const getCatalogs: RequestHandler = async (req, res) => {
     }
 }
 
-const getSubCategory: RequestHandler = () => {
-
-}
-
 const addOne: RequestHandler = async (req, res): Promise<any> => {
     const { name, discription, path } = req.body;
 
     try {
-        const category = await CatalogModel.find({ path: path })
-        if (category) {
-            return res.status(500).json({ message: 'this category already exist' })
+        const data = catalog.CreateWithPath(path,name,discription)
+        if (!data.success) {
+            return res.status(200).json({ success: true })
         }
         else {
-            const newCatalog = await CatalogModel.insertOne({ name, discription, path })
-            return res.status(200).json({ success: true })
+            return res.status(500).json({ message: 'this category already exist' })
         }
     }
     catch (err) {
-
+        return res.status(500).json({ message: 'some error' })
     }
 }
 
 const deleteOne: RequestHandler = async (req, res): Promise<any> => {
-    const { id } = req.body;
+    const { path } = req.body;
     try {
-        CatalogModel.findByIdAndDelete(id)
+        const result = catalog.removeByPath(path)
+
+        if(result.success){
+            res.status(200).json({success:true,message:'good'})
+        }
+        else{
+            res.status(400).json({success:false,message:'false'})
+        }
     }
     catch (err) {
-
-        res.status(500).json({message:'something no work'})
+        res.status(500).json({ message: 'something no work' })
     }
 }
 
-const updateCategory: RequestHandler = () => {
-
+const updateCategory: RequestHandler = (req,res) => {
+    const { path,discription,name } = req.body;
+    try {
+        const result = catalog.editByPath(path,{name})
+        if(result.success){
+            res.status(200).json({success:true,message:'good'})
+        }
+        else{
+            res.status(400).json({success:false,message:'false'})
+        }
+    }
+    catch (err) {
+        res.status(500).json({ message: 'something no work' })
+    }
 }
 
-const findSubCategory = () => {
-
-}
+export {getCatalogs,addOne,deleteOne,updateCategory}

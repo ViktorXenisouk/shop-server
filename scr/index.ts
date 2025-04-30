@@ -32,13 +32,33 @@ app.listen(PORT, (error) => {
     console.log(`conect on: http://${HOST}:${PORT}`)
 });
 
+//login reservation logic
 app.post('/auth/register', registerValidation, UserController.register)
 app.get('/auth/login', loginValidation, UserController.login)
 app.get('/auth/getUser', checkAuth, UserController.getMe)
+// public API
+app.get('/products',ProductController.search)
+app.get('/category')
 
-app.get('/products/*')
-app.post('/product/add',ProductValidator.addValidation, ProductController.add)
-app.patch('/product/update',ProductController.update)
+// admin login
+app.get('/admin/login');
 
-app.get('/catalog')
+//admin LVL=1
+app.get('/admin/category/create')
+app.get('/admin/category/update')
+app.get('/admin/category/remove')
 
+//admin LVL=1
+app.get('/admin/products/create',ProductValidator.addValidation, ProductController.create)
+app.get('/admin/products/update',ProductController.update)
+app.get('/admin/products/remove')
+
+//admin LVL=2
+app.get('/admin/users/block')
+app.get('/admin/users/remove')
+app.get('/admin/users/update')
+
+//admin LVL=3
+app.get('/admin/admins/create')
+app.get('/admin/admins/remove')
+app.get('/admin/admins/update')
