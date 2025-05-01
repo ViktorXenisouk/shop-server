@@ -1,4 +1,4 @@
-import {body} from 'express-validator';
+import {body,param} from 'express-validator';
 
 const opt = {checkFalsy: true, nullable: true}
 
@@ -18,8 +18,9 @@ const edit = [
     body('imgs').optional(opt).isArray()
 ];
 
-const remove = [
-    body('id').isString(),
+const search = [
+    param('tags').optional().isString(),
+    param('category').optional().isString(),
 ]
 
-export {create,edit,remove}
+export {create,edit,search}

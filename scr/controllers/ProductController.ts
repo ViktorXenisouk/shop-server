@@ -107,14 +107,8 @@ const edit: RequestHandler = async (req, res): Promise<any> => {
 }
 
 const remove : RequestHandler = async (req: Request & any, res) : Promise<any> => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({
-            errors: errors.array()
-        });
-    }
     try{
-        const {id} = req.body;
+        const { id } = req.params
 
         const product = await ProductModel.findByIdAndDelete(id);
 

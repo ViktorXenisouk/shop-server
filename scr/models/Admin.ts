@@ -24,7 +24,7 @@ const json = {
         required:true
     },
     imgUrl: {
-        type: URL,
+        type: String,
         required: false,
     },
     isMain:{

@@ -2,17 +2,9 @@ import { RequestHandler } from "express";
 import bcrypt from "bcrypt"
 import UserModel from "../models/User"
 import jsonwebtoken from "jsonwebtoken"
-import { validationResult, body } from 'express-validator';
 import { Request } from "express";
 
 const register: RequestHandler = async (req, res): Promise<any> => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({
-            errors: errors.array()
-        });
-    }
-
     try {
         const { username, email, password } = req.body
         const salt = bcrypt.genSaltSync(10);
@@ -52,14 +44,9 @@ const register: RequestHandler = async (req, res): Promise<any> => {
 };
 
 const login: RequestHandler = async (req, res): Promise<any> => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({
-            errors: errors.array()
-        });
-    }
+    const { email, password } = req.body
     try {
-        const user = await UserModel.findOne({ email: req.body.email });
+        const user = await UserModel.findOne({ email: email }).select(['id', 'passwordHash']);
 
         if (!user) {
             return res.status(404).json({
@@ -67,7 +54,7 @@ const login: RequestHandler = async (req, res): Promise<any> => {
             })
         }
 
-        const isValidPass = await bcrypt.compare(req.body.password, user.passwordHash);
+        const isValidPass = await bcrypt.compare(password, user.passwordHash);
 
         if (!isValidPass) {
             return res.status(400).json({
@@ -80,7 +67,6 @@ const login: RequestHandler = async (req, res): Promise<any> => {
         const { passwordHash, ...userData } = user;
 
         return res.json({
-            ...userData,
             token
         });
 
@@ -127,12 +113,6 @@ const getMe: RequestHandler = async (req: Request & any, res): Promise<any> => {
 };
 
 const editMe: RequestHandler = async (req: Request & any, res): Promise<any> => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({
-            errors: errors.array()
-        });
-    }
     try {
         if (req.userId) {
             const user = await UserModel.findById(req.userId);
@@ -175,12 +155,6 @@ const editMe: RequestHandler = async (req: Request & any, res): Promise<any> => 
 }
 
 const setIsBlocked: RequestHandler = async (req, res): Promise<any> => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({
-            errors: errors.array()
-        });
-    }
     try {
         const { id, blocked } = req.body
 
@@ -200,14 +174,8 @@ const setIsBlocked: RequestHandler = async (req, res): Promise<any> => {
 }
 
 const remove: RequestHandler = async (req: Request & any, res): Promise<any> => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({
-            errors: errors.array()
-        });
-    }
     try {
-        const { id } = req.body;
+        const { id } = req.params
 
         const user = await UserModel.findByIdAndDelete(id);
 
@@ -224,12 +192,6 @@ const remove: RequestHandler = async (req: Request & any, res): Promise<any> => 
 }
 
 const edit: RequestHandler = async (req: Request & any, res): Promise<any> => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({
-            errors: errors.array()
-        });
-    }
     try {
         const { username, email, password, id } = req.body
         const user = await UserModel.findById(id);
@@ -262,4 +224,16 @@ const edit: RequestHandler = async (req: Request & any, res): Promise<any> => {
         })
     }
 }
-export { register, login, getMe, editMe, setIsBlocked, remove,edit }
+
+const getAll: RequestHandler = async (req, res) => {
+    try {
+        const users = await UserModel.find().select(['username', 'email', 'id']);
+
+        res.status(200).json({ data: users })
+    }
+    catch {
+        res.status(500).json({ message: 'no works' })
+    }
+}
+
+export { register, login, getMe, editMe, setIsBlocked, remove, edit,getAll}

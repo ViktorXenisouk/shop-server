@@ -4,6 +4,7 @@ const create = [
     body('name').isString(),
     body('email').isEmail(),
     body('password').isString(),
+    body('lvl').isNumeric(),
 ]
 
 const login = [
@@ -18,9 +19,4 @@ const edit = [
     body('imgUrl'),
 ]
 
-const remove = [
-    body('id').isString()
-]
-
-
-export {create,login,edit,remove}
+export {create,login,edit}

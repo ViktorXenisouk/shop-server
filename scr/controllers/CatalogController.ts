@@ -14,13 +14,7 @@ const get: RequestHandler = async (req, res) => {
     }
 }
 
-const addOne: RequestHandler = async (req, res): Promise<any> => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({
-            errors: errors.array()
-        });
-    }
+const create: RequestHandler = async (req, res): Promise<any> => {
     const { name, discription, path } = req.body;
 
     try {
@@ -38,12 +32,6 @@ const addOne: RequestHandler = async (req, res): Promise<any> => {
 }
 
 const remove: RequestHandler = async (req, res): Promise<any> => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({
-            errors: errors.array()
-        });
-    }
     const { path } = req.body;
     try {
         const result = catalog.removeByPath(path)
@@ -61,12 +49,6 @@ const remove: RequestHandler = async (req, res): Promise<any> => {
 }
 
 const edit: RequestHandler = async (req,res) : Promise<any> => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({
-            errors: errors.array()
-        });
-    }
     const { path,discription,name } = req.body;
     try {
         const result = catalog.editByPath(path,{name})
@@ -82,4 +64,4 @@ const edit: RequestHandler = async (req,res) : Promise<any> => {
     }
 }
 
-export {get,addOne,remove,edit}
+export {get,create,remove,edit}
