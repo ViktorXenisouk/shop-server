@@ -5,12 +5,6 @@ import jsonwebtoken from 'jsonwebtoken';
 import { validationResult, body } from 'express-validator';
 
 const login: RequestHandler = async (req, res): Promise<any> => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({
-            errors: errors.array()
-        });
-    }
     try {
         const user = await AdminModel.findOne({ name: req.body.name });
 
@@ -46,12 +40,6 @@ const login: RequestHandler = async (req, res): Promise<any> => {
 };
 
 const create: RequestHandler = async (req, res): Promise<any> => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({
-            errors: errors.array()
-        });
-    }
     try {
         const { name, email, password, imgUrl, lvl } = req.body
         const salt = bcrypt.genSaltSync(10);
@@ -93,12 +81,6 @@ const create: RequestHandler = async (req, res): Promise<any> => {
 };
 
 const editMe: RequestHandler = async (req: Request & any, res) : Promise<any> => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({
-            errors: errors.array()
-        });
-    }
     try {
         if (req.userId) {
             const user = await AdminModel.findById(req.userId);
@@ -141,13 +123,6 @@ const editMe: RequestHandler = async (req: Request & any, res) : Promise<any> =>
 }
 
 const remove : RequestHandler = async (req: Request & any, res) : Promise<any> => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({
-            errors: errors.array()
-        });
-    }
-
     try{
         const {id} = req.body;
 
@@ -165,4 +140,37 @@ const remove : RequestHandler = async (req: Request & any, res) : Promise<any> =
     }
 }
 
-export { login, create, editMe,remove,}
+const getMe: RequestHandler = async (req: Request & any, res): Promise<any> => {
+    try {
+        if (req.userId) {
+            console.log(req.userId);
+            const user = await AdminModel.findById(req.userId);
+
+            if (!user) {
+                return res.status(404).json({
+                    message: 'user no exist'
+                })
+            }
+
+            const { passwordHash, ...userData } = user;
+
+            return res.json({
+                userData,
+                userId: req.userId,
+            });
+        }
+        else {
+            return res.status(500).json({
+                message: 'some mistake with user ID'
+            })
+        }
+    } catch (err) {
+        console.log(err);
+
+        return res.status(500).json({
+            message: 'no entry',
+            errors: err
+        })
+    }
+};
+export { login, create, editMe,remove,getMe}

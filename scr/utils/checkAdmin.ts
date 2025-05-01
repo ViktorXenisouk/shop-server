@@ -14,10 +14,11 @@ const getAdminLevel = async (req: Request & any): Promise<{ success: boolean, le
     }
     try {
         const decoded = jwt.verify(token, 'secret') as { id: string };
-        const admin = await AdminModel.findById(req.userId);
+        const id = decoded.id
+        const admin = await AdminModel.findById(id);
         if (admin && admin.securityLvl > 0) {
             req.level = admin.securityLvl;
-            req.userId = decoded.id;
+            req.userId = id;
             return {
                 success: true,
                 level: admin.securityLvl,
@@ -43,16 +44,8 @@ const getAdminLevel = async (req: Request & any): Promise<{ success: boolean, le
 
 const checkAdminLevel = async (req:Request&any, res:Response, next:NextFunction,lvl:number): Promise<void> => {
     const result = await getAdminLevel(req)
-    // remove
-    if(true){
-        req.userId = result.id;
-        next()
-        return
-    }
-    return;
-    // remove
+    
     if(result.success && result.level>=lvl){
-        req.userId = result.id;
         next()
         return
     }

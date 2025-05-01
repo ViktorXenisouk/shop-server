@@ -15,7 +15,7 @@ const login = [
 const register = [
     body('email').isEmail(),
     body('username').isLength({min : 3}),
-    body('password').isStrongPassword(passwordOptions),
+    body('password').isLength({min: 4}),
 ];
 
 const editMe = [

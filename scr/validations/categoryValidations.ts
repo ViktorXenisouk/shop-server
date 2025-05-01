@@ -7,10 +7,6 @@ const create = [
     body('imgUrl').optional().isURL()
 ];
 
-const remove = [
-    body('path').isString()
-]
-
 const edit = [
     body('path').isString(),
     body('name').optional().isString(),
@@ -18,4 +14,4 @@ const edit = [
     body('imgUrl').optional().isString(),
 ]
 
-export {create,remove,edit}
+export {create,edit}
