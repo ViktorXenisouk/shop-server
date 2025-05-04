@@ -7,7 +7,7 @@ const create = [
     body('tags').isArray(),
     body('discription').isString(),
     body('path').isString(),
-    body('imgs').isArray(),
+    body('imgs').optional().isArray(),
 ];
 
 const edit = [

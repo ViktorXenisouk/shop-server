@@ -1,12 +1,22 @@
 {
     "catalogs": [
         {
+            "tags":{
+                    "category1":{"a":["tag1","tag2","tag3"],"isHor":true},
+                    "category2":{"a":["tag1","tag2","tag3"],"isHor":false}
+            },
+
             "name": "computers",
             "path": "computers",
             "catalogs": [
                 {
                     "name": "notebook",
                     "path": "notebook",
+                    "tags":
+                        {
+                            "category3":{"a":["tag1","tag2","tag3"],"isHor":false},
+                            "category4":{"a":["tag1","tag2","tag3"],"isHor":true}
+                        },  
                     "catalogs": [
                         {
                             "name": "mac",

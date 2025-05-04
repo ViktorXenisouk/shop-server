@@ -1,5 +1,4 @@
 import UserModel from "../models/User"
-import ProductModel from "../models/Product"
 import { RequestHandler, Request } from "express"
 
 
