@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import ProductModel from ".././models/Product"
-import { splitPath } from "../utils/splitPath";
+import { splitPath } from "../utils/pathUtils";
 import { validationResult } from 'express-validator';
 
 const getProductById: RequestHandler = async (req, res): Promise<any> => {

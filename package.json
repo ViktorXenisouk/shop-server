@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "echo \"start develop\" && tsc && node build/index.js",
+    "start": "echo \"start develop\" && tsc && node build/server.js",
     "init_catalog": "tsc && node build/initializedDataBase.js"
   },
   "author": "",

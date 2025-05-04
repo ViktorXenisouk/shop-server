@@ -8,7 +8,7 @@ const passwordOptions : IsStrongPasswordOptions = {
 }
 
 const login = [
-    body('email').isEmail(),
+    body('email').isString(),
     body('password').isLength({min : 5}),
 ];
 
