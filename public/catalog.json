@@ -1,44 +1,370 @@
-{
-    "catalogs": [
-        {
-            "name": "computers",
-            "path": "computers",
-            "catalogs": [
-                {
-                    "name": "notebook",
-                    "path": "notebook",
-                    "catalogs": [
-                        {
-                            "name": "mac",
-                            "path": "mac"
+[
+    {
+        "name": "gadget",
+        "path": "gadget",
+        "catalogs": [
+            {
+                "name": "notebook",
+                "path": "notebook",
+                "filter": {
+                    "Panel type": {
+                        "variant": "tags-vertical",
+                        "props": {
+                            "tags": [
+                                "IPS",
+                                "OLED",
+                                "Liquid Retina XDR",
+                                "TN",
+                                "WVA"
+                            ]
                         },
-                        {
-                            "name": "",
-                            "path": "apple",
-                            "catalogs": [
-                                {
-                                    "name": "lenovo",
-                                    "path": "m1",
-                                    "catalogs": [],
-                                    "discription": "he he"
-                                }
+                        "Processor": {
+                            "variant": "tags-horizontal",
+                            "props": {
+                                "tags": [
+                                    "Intel",
+                                    "AMD",
+                                    "Silicon"
+                                ]
+                            }
+                        },
+                        "RAW": {
+                            "variant": "min-max",
+                            "props": {
+                                "min": 1,
+                                "max": 64
+                            }
+                        },
+                        "Operating system": {
+                            "variant": "tags-vertical",
+                            "props": {
+                                "tags": [
+                                    "Windows 10",
+                                    "Windows 11",
+                                    "MacOs",
+                                    "Linux",
+                                    "No Operating system"
+                                ]
+                            }
+                        },
+                        "Storage type": {
+                            "variant": "tags-horizontal",
+                            "props": {
+                                "tags": [
+                                    "SSD",
+                                    "HDD"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "catalogs": [
+                    {
+                        "name": "gaming",
+                        "path": "gaming"
+                    },
+                    {
+                        "name": "office",
+                        "path": "office"
+                    },
+                    {
+                        "name": "Apple",
+                        "path": "apple",
+                        "catalogs": [
+                            {
+                                "name": "M1",
+                                "path": "m1"
+                            },
+                            {
+                                "name": "M2",
+                                "path": "m2"
+                            },
+                            {
+                                "name": "M3",
+                                "path": "m3"
+                            },
+                            {
+                                "name": "Air",
+                                "path": "air"
+                            },
+                            {
+                                "name": "Pro",
+                                "path": "pro"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "windows 10",
+                        "path": "windows_10"
+                    },
+                    {
+                        "name": "windows 11",
+                        "path": "windows_11"
+                    }
+                ]
+            },
+            {
+                "name": "desktop computer",
+                "path": "desktop_computer",
+                "catalogs": [
+                    {
+                        "name": "gaming",
+                        "path": "gaming"
+                    },
+                    {
+                        "name": "office",
+                        "path": "office"
+                    },
+                    {
+                        "name": "apple",
+                        "path": "apple"
+                    },
+                    {
+                        "name": "windows 10",
+                        "path": "windows_10"
+                    },
+                    {
+                        "name": "windows 11",
+                        "path": "windows_11"
+                    }
+                ]
+            },
+            {
+                "name": "consoles",
+                "path": "consoles",
+                "catalogs": [
+                    {
+                        "name": "X-Box series S",
+                        "path": "x_box_series_S"
+                    },
+                    {
+                        "name": "X-Box series X",
+                        "path": "x_box_series_X"
+                    },
+                    {
+                        "name": "PS4",
+                        "path": "ps4"
+                    },
+                    {
+                        "name": "PS5",
+                        "path": "ps5"
+                    },
+                    {
+                        "name": "Nintendo",
+                        "path": "nintendo"
+                    },
+                    {
+                        "name": "VR",
+                        "path": "vr"
+                    }
+                ]
+            },
+            {
+                "name": "phones",
+                "path": "phones",
+                "filter": {
+                    "Brands": {
+                        "variant": "tags-vertical",
+                        "props": {
+                            "tags": [
+                                "Apple",
+                                "Samsung",
+                                "Xiaomi",
+                                "Google",
+                                "Motorola",
+                                "Nokia"
                             ]
                         }
-                    ]
+                    },
+                    "Display size": {
+                        "variant": "min-max",
+                        "props": {
+                            "min": 1,
+                            "max": 16
+                        }
+                    },
+                    "Internal memory": {
+                        "variant": "min-max",
+                        "props": {
+                            "min": 1,
+                            "max": 1000
+                        }
+                    },
+                    "Functions": {
+                        "variant": "tags-vertical",
+                        "props": {
+                            "tags": [
+                                "Fast charging",
+                                "Wireless charging",
+                                "Face unlocking",
+                                "FM Radio"
+                            ]
+                        }
+                    }
                 },
-                {
-                    "name": "pc",
-                    "path": "pc"
+                "catalogs": [
+                    {
+                        "name": "IPhone 17",
+                        "path": "iphone_17"
+                    },
+                    {
+                        "name": "IPhone 16",
+                        "path": "iphone_16"
+                    },
+                    {
+                        "name": "IPhone 15",
+                        "path": "iphone_15"
+                    },
+                    {
+                        "name": "Samsung",
+                        "path": "samsung"
+                    },
+                    {
+                        "name": "Xiaomi",
+                        "path": "xiaomi"
+                    },
+                    {
+                        "name": "Lenovo",
+                        "path": "lenovo"
+                    }
+                ]
+            },
+            {
+                "name": "tablet",
+                "path": "tablet",
+                "filter": {
+                    "Brands": {
+                        "variant": "tags-vertical",
+                        "props": {
+                            "tags": [
+                                "Apple",
+                                "Samsung",
+                                "Xiaomi",
+                                "Google",
+                                "Motorola",
+                                "Nokia"
+                            ]
+                        }
+                    },
+                    "Display size": {
+                        "variant": "min-max",
+                        "props": {
+                            "min": 1,
+                            "max": 16
+                        }
+                    },
+                    "Internal memory": {
+                        "variant": "min-max",
+                        "props": {
+                            "min": 1,
+                            "max": 1000
+                        }
+                    },
+                    "Functions": {
+                        "variant": "tags-vertical",
+                        "props": {
+                            "tags": [
+                                "Fast charging",
+                                "Wireless charging",
+                                "Face unlocking",
+                                "FM Radio"
+                            ]
+                        }
+                    }
                 },
-                {
-                    "name": "miniPC",
-                    "path": "minipc"
+                "catalogs": [
+                    {
+                        "name": "Apple",
+                        "path": "apple"
+                    },
+                    {
+                        "name": "Mini",
+                        "path": "mini"
+                    },
+                    {
+                        "name": "Big",
+                        "path": "big"
+                    },
+                    {
+                        "name": "Samsung",
+                        "path": "samsung"
+                    },
+                    {
+                        "name": "Xiaomi",
+                        "path": "xiaomi"
+                    },
+                    {
+                        "name": "Lenovo",
+                        "path": "lenovo"
+                    }
+                ]
+            },
+            {
+                "name": "smart watchs",
+                "path": "smart_watchs",
+                "filter": {
+                    "Brands": {
+                        "variant": "tags-vertical",
+                        "props": {
+                            "tags": [
+                                "Apple",
+                                "Samsung",
+                                "Xiaomi",
+                                "Google",
+                                "Motorola",
+                                "Nokia"
+                            ]
+                        }
+                    },
+                    "Display size": {
+                        "variant": "min-max",
+                        "props": {
+                            "min": 1,
+                            "max": 16
+                        }
+                    },
+                    "Internal memory": {
+                        "variant": "min-max",
+                        "props": {
+                            "min": 1,
+                            "max": 1000
+                        }
+                    },
+                    "Functions": {
+                        "variant": "tags-vertical",
+                        "props": {
+                            "tags": [
+                                "Fast charging",
+                                "Wireless charging",
+                                "Face unlocking",
+                                "FM Radio"
+                            ]
+                        }
+                    }
                 },
-                {
-                    "name": "gameing",
-                    "path": "gaming"
-                }
-            ]
-        }
-    ]
-}
+                "catalogs": [
+                    {
+                        "name": "Apple",
+                        "path": "apple"
+                    },
+                    {
+                        "name": "Sport",
+                        "path": "sport"
+                    },
+                    {
+                        "name": "Samsung",
+                        "path": "samsung"
+                    },
+                    {
+                        "name": "Xiaomi",
+                        "path": "xiaomi"
+                    },
+                    {
+                        "name": "Lenovo",
+                        "path": "lenovo"
+                    }
+                ]
+            }
+        ]
+    }
+]

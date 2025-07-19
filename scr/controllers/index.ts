@@ -1,7 +1,8 @@
-import * as ProductController from "./ProductController"
-import * as UserController from "./UserController";
-import * as AdminController from "./AdminController"
-import * as CategoryController from "./CategoryController"
-import * as AuthUsersController from "./AuthUsersController"
+import {ProductController} from "./products.controller"
+import {UserController} from "./user.controller";
+import {AdminController} from "./admin.controller"
+import {CategoryController} from "./category.controller"
+import { BasketController} from "./basket.controller"
+import { FavoriteController} from "./favorite.controller"
 
-export {ProductController,UserController,AdminController,CategoryController,AuthUsersController}
+export {ProductController,UserController,AdminController,CategoryController,BasketController,FavoriteController}

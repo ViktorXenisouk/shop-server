@@ -9,16 +9,13 @@ const uri = "mongodb+srv://king:Kingpig2005@cluster0.5dlv2wj.mongodb.net/?appNam
 mongoose.connect(uri)
     .then(() => {
         console.log('Data Base ok');
-        app.listen(PORT, (error) => {
-            if (error) {
-                console.log(error);
-                return;
-            }
-        
-            console.log('server Ok');
-            console.log(`conect on: http://${HOST}:${PORT}`)
-        });
-    })
-    .catch((error) => {
-        console.log(error);
     });
+
+app.listen(PORT, (error) => {
+    if (error) {
+        console.log(error);
+        return;
+    }
+    console.log('server Ok');
+    console.log(`conect on: http://${HOST}:${PORT}`)
+})

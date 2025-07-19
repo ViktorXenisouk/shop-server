@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { splitPath } from '../utils/pathUtils';
+import { splitPath } from '../utils/category.util';
 
 type Product = {
     name: string;
