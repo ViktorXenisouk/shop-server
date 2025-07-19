@@ -3,8 +3,10 @@ import {body} from 'express-validator';
 const create = [
     body('name').isString(),
     body('path').isString(),
+    body('parentPath').isString(),
+    body('tags').isObject(),
     body('discription').isString(),
-    body('imgUrl').optional().isURL()
+    //body('imgUrl').optional().isURL()
 ];
 
 const edit = [

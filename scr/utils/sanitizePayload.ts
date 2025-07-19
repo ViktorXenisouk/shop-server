@@ -1,4 +1,4 @@
-const sanitizeUpdatePayload = (data: Record<string, any>) => {
+const sanitizePayload = (data: Record<string, any>) => {
     const cleaned: Record<string, any> = {};
 
     for (const key in data) {
@@ -13,4 +13,4 @@ const sanitizeUpdatePayload = (data: Record<string, any>) => {
     return cleaned;
 };
 
-export { sanitizeUpdatePayload }
+export { sanitizePayload }

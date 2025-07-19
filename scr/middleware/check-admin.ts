@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { RequestHandler } from 'express';
 import { Request,Response,NextFunction } from 'express';
-import AdminModel from '../models/Admin'
+import AdminModel from '../models/admin.model'
 
 const getAdminLevel = async (req: Request & any): Promise<{ success: boolean, level: number,message?: string, id?: string }> => {
     const token = (req.headers.authorization || '').replace('Bearer ', '');

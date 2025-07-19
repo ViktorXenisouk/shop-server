@@ -2,9 +2,8 @@ import { Schema } from "mongoose";
 import mongoose from "mongoose";
 
 const TagSchema = new Schema({
-    name:String,
-    tags: [String],
-    isHor: Boolean,
+    tags: {type:[String]},
+    type:{type:String},
 }, { _id: false });
 
 const CategorySchema = new Schema({
@@ -12,8 +11,8 @@ const CategorySchema = new Schema({
     path: { type: String, required: true },
     fullPath: { type: String, required: true, unique: true },
     parentPath: { type: String },
-    discription: String,
-    imgUrl: String,
+    discription: {type:String},
+    imgUrl:{type:String},
     tags: { type: Map, of: TagSchema },
     isDeleted: { type: Boolean, default: false },
 });

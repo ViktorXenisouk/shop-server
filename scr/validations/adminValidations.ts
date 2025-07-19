@@ -4,7 +4,7 @@ const create = [
     body('name').isString(),
     body('email').isEmail(),
     body('password').isString(),
-    body('lvl').isNumeric(),
+    body('securityLvl').isNumeric(),
 ]
 
 const login = [

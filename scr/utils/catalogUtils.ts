@@ -1,6 +1,7 @@
-import Category from "../models/Category"
+import Category from "../models/category.model"
 
 const getMergedTags = async (fullPath: string) => {
+  /*
   const parts = fullPath.split('/').filter(Boolean);
 
   // Получим все уровни пути
@@ -8,9 +9,9 @@ const getMergedTags = async (fullPath: string) => {
   for (let i = 1; i <= parts.length; i++) {
     allPaths.push(parts.slice(0, i).join('/'));
   }
-
+*/
   // Найдём все категории по пути
-  const categories = await Category.find({ fullPath: { $in: allPaths } });
+  const categories = await Category.find({ fullPath: { $regex:`^${fullPath}` } });
 
   // Сортируем в порядке от корня к листу
   categories.sort((a, b) => a.fullPath.length - b.fullPath.length);

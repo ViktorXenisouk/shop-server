@@ -1,26 +1,30 @@
 {
     "catalogs": [
         {
-            "tags":{
-                    "category1":{"a":["tag1","tag2","tag3"],"isHor":true},
-                    "category2":{"a":["tag1","tag2","tag3"],"isHor":false}
-            },
-
             "name": "computers",
             "path": "computers",
+            "tags":{
+                    "category1":{"tags":["tag_1","tag_2","tag3"],"isHor":true},
+                    "category2":{"tags":["tag1","tag2","tag3"],"isHor":false}
+            },
             "catalogs": [
                 {
                     "name": "notebook",
                     "path": "notebook",
                     "tags":
                         {
-                            "category3":{"a":["tag1","tag2","tag3"],"isHor":false},
-                            "category4":{"a":["tag1","tag2","tag3"],"isHor":true}
+                            "category3":{"tags":["tag1_2","tag_2","tag_3"],"isHor":false},
+                            "category4":{"tags":["tag1","tag2","tag3"],"isHor":true}
                         },  
                     "catalogs": [
                         {
                             "name": "mac",
-                            "path": "mac"
+                            "path": "mac",
+                            "tags":
+                        {
+                            "category3":{"tags":["m1","m3","m4"],"isHor":false},
+                            "category4":{"tags":["tag1","tag2","tag3"],"isHor":true}
+                        }
                         }
                     ]
                 },
