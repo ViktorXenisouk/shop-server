@@ -1,8 +1,8 @@
-import bcrypt from "bcrypt"
 import UserModel from "../models/user.model"
+import bcrypt from "bcrypt"
 
 class UserService {
-    public async getById(id: string) {
+    public async GetById(id: string) {
         try {
             const user = await UserModel.findById(id).lean()
             if (!user) {
@@ -16,7 +16,7 @@ class UserService {
         }
     }
 
-    public async editMe(payload: { username: string, email: string, password: string }, id?: string) {
+    public async EditMe(payload: { username: string, email: string, password: string }, id?: string) {
         try {
             if (id) {
                 const user = await UserModel.findById(id);
@@ -62,106 +62,142 @@ class UserService {
         }
         catch (err) {
             return {
-                success:false,
-                status:500,
+                success: false,
+                status: 500,
                 message: 'no entry',
                 errors: err
             }
         }
     }
 
-    public async setBlocked (id:string,blocked:boolean) {
-         try {        
-                const user = await UserModel.findById(id);
-        
-                if (!user) return {success:false,status:404,message:'user no find'}
-                
-                user.isBlocked = blocked
-        
-                await user.save()
-        
-                return { success:true,status:200,message: `user ${user.username} is ${user.isBlocked}` }
+    public async SetBlocked(id: string, blocked: boolean) {
+        try {
+            const user = await UserModel.findById(id);
+
+            if (!user) return {
+                status: 404,
+                message: 'user no find'
             }
-            catch (err) {
-                return { success:false,status:500,message: err || 'some error' }
+
+            user.isBlocked = blocked
+
+            await user.save()
+
+            return {
+                status: 200,
+                message: `user ${user.username} is ${user.isBlocked}`
             }
+        }
+        catch (err) {
+            console.error(err)
+            return {
+                success: false,
+                status: 500,
+                message: 'some error'
+            }
+        }
     }
 
-    public async remove (id:string) {
-         try {        
-                const user = await UserModel.findByIdAndDelete(id);
-        
-                if (!user) return {success:false,status:404,message:'user no found'}
-        
-                return {
-                    success:true,
-                    status:200,
-                    message:'user successfuly delete'
-                }
+    public async Delete(id: string) {
+        try {
+            const user = await UserModel.findByIdAndDelete(id);
+
+            if (!user) return {
+                status: 404,
+                message: 'user no found'
             }
-            catch (err) {
-                return {
-                    success:true,
-                    status:500,
-                    message: err || "some error",
-                }
+
+            return {
+                status: 204,
+                message: 'user successfuly delete'
             }
+        }
+        catch (err) {
+            console.error(err)
+            return {
+                status: 500,
+                message: "some error",
+            }
+        }
     }
 
-    public async edit (id:string,payload:{username:string,email:string,password:string}) {
-         try {
+    public async Edit(id: string, payload: { username: string, email: string, password: string }) {
+        try {
 
             const user = await UserModel.findById(id);
-        
-                if (!user) 
-                    return {
-                        success:false,
-                        status:404,
-                        message:'user no found'
-                    }
-                
-                const { username, email, password } = payload
-        
-                if (username) user.username = username;
-                if (email) {
-                    const u = await UserModel.find({ email: email })
-                    if (!u) {
-                        user.email = email
-                    }
-                }
-                if (password) {
-                    const salt = bcrypt.genSaltSync(10);
-                    const hash = bcrypt.hashSync(password, salt);
-                    user.passwordHash = hash;
+
+            if (!user)
+                return {
+                    status: 404,
+                    message: 'user no found'
                 }
 
-                await user.save()
+            const { username, email, password } = payload
 
-                return {success:true,status:200,message:'user successfuly edit'}
+            if (username) user.username = username;
+            if (email) {
+                const u = await UserModel.find({ email: email })
+                if (!u) {
+                    user.email = email
+                }
             }
-            catch (err) {
-                return {success:false,status:500,message: err || 'some error'}
+            if (password) {
+                const salt = bcrypt.genSaltSync(10);
+                const hash = bcrypt.hashSync(password, salt);
+                user.passwordHash = hash;
             }
+
+            const data = await user.save()
+
+            return {
+                status: 200,
+                message: 'user successfuly edit',
+                data: data
+            }
+        }
+        catch (err) {
+            return {
+                status: 500,
+                message: 'some error'
+            }
+        }
     }
 
-    public async find(payback:{search?:string,isBlocked?:boolean}){
-        try {        
-                const filter = {} as any
-        
-                if (payback.search) {
-                    filter.username = { $regex: payback.search, $options: "i" }
-                    filter.email = { $regex: payback.search, $options: "i" }
-                }
-                if (payback.isBlocked) filter.isBlocked = payback.isBlocked ? { $eq: true } : { $or: [{ $exists: false }, { $eq: false }] }
-        
-                const users = await UserModel.find(filter).lean()
-        
-                return {success:true,status:200,data:users,message:'users are found'}
+    public async Find(payback: { search?: string, isBlocked?: boolean }) {
+        try {
+            const filter = {} as any
+
+            if (payback.search) {
+                filter.username = { $regex: payback.search, $options: "i" }
+                filter.email = { $regex: payback.search, $options: "i" }
             }
-            catch (err){
-                return {success:false,status:500,message:err||'some error on server'}
+            if (payback.isBlocked)
+                filter.isBlocked = payback.isBlocked ?
+                    { $eq: true }
+                    :
+                    {
+                        $or: [
+                            { $exists: false },
+                            { $eq: false }
+                        ]
+                    }
+
+            const users = await UserModel.find(filter).lean()
+
+            return {
+                status: 200,
+                message: 'users are found',
+                data: users,
             }
+        }
+        catch (err) {
+            console.error(err)
+            return {
+                status: 500,
+                message: 'some error on server'
+            }
+        }
     }
 }
 
-export {UserService}
+export { UserService }

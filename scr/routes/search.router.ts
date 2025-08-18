@@ -1,17 +1,42 @@
 import { Router } from "express";
 import { SearchService } from "../services/search.service";
-import {SearchController} from "../controllers/search.controller"
-import { checkIsAdminLvl3 } from "../middleware/check-admin";
+import { SearchController } from "../controllers/search.controller"
+import { checkIsAdminLvl2 } from "../middleware/check-admin";
+import * as SearchValidations from "../validations/search.validations"
+import { validateRequest } from "../middleware/validate-request";
 
 const searchService = new SearchService()
 const searchController = new SearchController(searchService)
 
 const searchRouter = Router()
 
-searchRouter.post('/',searchController.autoCreate)
-searchRouter.patch('/',searchController.createOrUpdate)
-searchRouter.delete('/',searchController.delete)
-searchRouter.get('/help/*',searchController.auxiliaryQueries)
-searchRouter.get('/find/:search(*)',searchController.find)
+// for admins
+
+searchRouter.post(
+    '/',
+    checkIsAdminLvl2,
+    searchController.AutoCreate)
+
+searchRouter.patch(
+    '/',
+    checkIsAdminLvl2, SearchValidations.createOrUpdate, validateRequest,
+    searchController.CreateOrUpdate)
+
+searchRouter.delete(
+    '/',
+    checkIsAdminLvl2, SearchValidations.remove, validateRequest,
+    searchController.Delete)
+
+// for users
+
+searchRouter.get(
+    '/help/*',
+    SearchValidations.auxiliaryQueries, validateRequest,
+    searchController.AuxiliaryQueries)
+
+searchRouter.get(
+    '/find/:search(*)',
+    SearchValidations.find, validateRequest,
+    searchController.Find)
 
 export default searchRouter

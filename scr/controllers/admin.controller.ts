@@ -4,68 +4,68 @@ import { AdminService } from "../services/admin.service";
 class AdminController {
     constructor(private adminService: AdminService) { }
 
-    public getById: RequestHandler = async (req, res) => {
+    public GetById: RequestHandler = async (req, res) => {
         const id = req.params.id
 
-        const { status, ...other } = await this.adminService.getById(id)
+        const { status, ...other } = await this.adminService.GetById(id)
 
         res.status(status).json({ ...other })
     }
 
-    public find: RequestHandler = async (req, res) => {
+    public Find: RequestHandler = async (req, res) => {
         const payback = req.query as { search?: string }
 
-        const { status, ...other } = await this.adminService.find(payback)
+        const { status, ...other } = await this.adminService.Find(payback)
 
         res.status(status).json({ ...other })
     }
 
-    public login: RequestHandler = async (req, res) => {
+    public Login: RequestHandler = async (req, res) => {
         const { name, password } = req.body
 
-        const { status, ...other } = await this.adminService.login(name, password)
+        const { status, ...other } = await this.adminService.Login(name, password)
 
         res.status(status).json({ ...other })
     }
 
-    public create: RequestHandler = async (req, res) => {
+    public Create: RequestHandler = async (req, res) => {
         const payload = req.body
 
-        const { status, ...other } = await this.adminService.create(payload)
+        const { status, ...other } = await this.adminService.Create(payload)
 
         res.status(status).json({ ...other })
     }
 
-    public editMe: RequestHandler = async (req, res) => {
+    public EditMe: RequestHandler = async (req, res) => {
         const id = 'userId' in req ? req.userId as string : ''
         const payload = req.body
 
-        const { status, ...other } = await this.adminService.editMe(id, payload)
+        const { status, ...other } = await this.adminService.EditMe(id, payload)
 
         res.status(status).json({ ...other })
     }
 
-    public editByAdmin: RequestHandler = async (req, res) => {
+    public EditByAdmin: RequestHandler = async (req, res) => {
         const id = req.params.id
         const payload = req.body
 
-        const { status, ...other } = await this.adminService.editByAdmin(id, payload)
+        const { status, ...other } = await this.adminService.EditByAdmin(id, payload)
 
         res.status(status).json({ ...other })
     }
 
-    public remove: RequestHandler = async (req, res) => {
+    public Delete: RequestHandler = async (req, res) => {
         const id = req.params.id
 
-        const { status, ...other } = await this.adminService.remove(id)
+        const { status, ...other } = await this.adminService.Delete(id)
 
         res.status(status).json({ ...other })
     }
 
-    public getMe: RequestHandler = async (req, res) => {
+    public GetMe: RequestHandler = async (req, res) => {
         const id = 'userId' in req ? req.userId as string : ''
 
-        const { status, ...other } = await this.adminService.getMe(id)
+        const { status, ...other } = await this.adminService.GetMe(id)
 
         res.status(status).json({ ...other })
     }

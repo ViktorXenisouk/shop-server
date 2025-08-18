@@ -7,9 +7,9 @@ const topItemController = new TopItemController(topItemService)
 
 const topItemRouter = Router();
 
-topItemRouter.get('/:category(*)', topItemController.find);
-topItemRouter.post('/', topItemController.create);
-topItemRouter.put('/:id', topItemController.update);
-topItemRouter.delete('/:id', topItemController.delete);
+topItemRouter.get('/:category(*)', topItemController.Find);
+topItemRouter.post('/', topItemController.Create);
+topItemRouter.put('/:id', topItemController.Update);
+topItemRouter.delete('/:id', topItemController.Delete);
 
 export default topItemRouter;

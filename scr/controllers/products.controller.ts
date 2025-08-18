@@ -4,46 +4,60 @@ import { ProductService } from "../services/product-service";
 class ProductController {
     constructor(private productService: ProductService) { }
 
-    public getProductById: RequestHandler = async (req, res) => {
+    public GetById: RequestHandler = async (req, res) => {
         const id = req.params.id
 
-        const { status, ...other } = await this.productService.getProductById(id)
+        const { status, ...other } = await this.productService.GetById(id)
 
         res.status(status).json({ ...other })
     }
 
-    public search: RequestHandler = async (req, res) => {
+    public GetProductsByIds: RequestHandler = async (req, res) => {
+        const ids = req.body.ids as string[]
+
+        const { status, ...other } = await this.productService.GetProductsByIds(ids)
+
+        res.status(status).json({ ...other })
+    }
+
+    public Find: RequestHandler = async (req, res) => {
         const page = 'page' in req ? parseInt(req.page as string) : 1
         const limit = 'limit' in req ? parseInt(req.limit as string) : 20
         const order = req.query.order as 'asc' | 'desc' ?? 'asc'
         const sort = req.query.sort as string || 'createdAt'
 
-        const { status, ...other } = await this.productService.search(page, limit, order, sort)
+        const category = req.query.category as string
+
+        const tag = req.query.tags as string
+
+        const search = req.query.search as string
+
+        const { status, ...other } = await this.productService.Find(page, limit, order, sort, category, tag, search)
 
         res.status(status).json({ ...other })
     }
 
-    public create: RequestHandler = async (req, res) => {
+    public Create: RequestHandler = async (req, res) => {
         const payload = req.body
 
-        const { status, ...other } = await this.productService.create(payload)
+        const { status, ...other } = await this.productService.Create(payload)
         res.status(status).json({ ...other })
     }
 
-    public edit: RequestHandler = async (req, res) => {
+    public Edit: RequestHandler = async (req, res) => {
         const id = req.params.id
         const payload = req.body;
 
-        const { status, ...other } = await this.productService.edit(id, payload)
-                res.status(status).json({ ...other })
+        const { status, ...other } = await this.productService.Edit(id, payload)
+        res.status(status).json({ ...other })
     }
 
-    public remove: RequestHandler = async (req, res) => {
+    public Delete: RequestHandler = async (req, res) => {
         const id = req.params.id
 
-        const { status, ...other } = await this.productService.remove(id)
+        const { status, ...other } = await this.productService.Delete(id)
         res.status(status).json({ ...other })
     }
 }
 
-export {ProductController}
+export { ProductController }

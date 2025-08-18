@@ -1,17 +1,25 @@
-import TopItem from '../models/top-item.model';
-import { sanitizePayload } from '../utils/sanitizePayload';
+import TopItemModel from '../models/top-item.model';
+import { sanitizePayload } from '../utils/sanitize-payload';
 
 class TopItemService {
-    public async create(payload: any) {
+    public async Create(payload: any) {
         try {
-            const newItem = new TopItem(sanitizePayload(payload));
+            const newItem = new TopItemModel(sanitizePayload(payload));
             const saved = await newItem.save();
-            return { status: 200, message: 'create', data: saved }
+            return {
+                status: 201,
+                message: 'create',
+                data: saved
+            }
         } catch (err) {
-            return { status: 500, message: 'Failed to create top item', error: err }
+            console.error(err)
+            return {
+                status: 500,
+                message: 'Failed to create top item',
+            }
         }
     }
-    public async find(category?: string, type?: string) {
+    public async Find(category?: string, type?: string) {
         try {
             const filter: any = {};
 
@@ -20,10 +28,10 @@ class TopItemService {
             }
 
             if (type) {
-                filter.type = { $regex: `^${type}$`, $options: 'i' }; // строгий match, без учёта регистра
+                filter.type = { $regex: `^${type}$`, $options: 'i' }
             }
 
-            const result = await TopItem.find(filter).lean();
+            const result = await TopItemModel.find(filter).lean();
 
             return {
                 status: 200,
@@ -42,32 +50,50 @@ class TopItemService {
         }
     }
 
-    public async update(id: string, payload: any) {
+    public async Update(id: string, payload: any) {
         try {
             const sanitized = sanitizePayload(payload)
-            const updated = await TopItem.findByIdAndUpdate(id, sanitized, {
+            const updated = await TopItemModel.findByIdAndUpdate(id, sanitized, {
                 new: true,
             });
             if (!updated) {
-                return { status: 404, message: 'product no found' }
+                return {
+                    status: 404,
+                    message: 'product no found'
+                }
             }
-            return { status: 200, message: 'updated', data: updated }
+            return {
+                status: 200,
+                message: 'updated',
+                data: updated
+            }
         } catch (err) {
-            return { status: 500, message: 'some error', error: err }
+            console.error(err)
+            return {
+                status: 500,
+                message: 'some error',
+            }
         }
     }
 
-    public async delete(id: string) {
+    public async Delete(id: string) {
         try {
-            const deleted = await TopItem.findByIdAndDelete(id);
+            const deleted = await TopItemModel.findByIdAndDelete(id);
             if (!deleted) {
                 return { status: 404, message: 'item no found' }
             }
-            return { status: 200, message: 'successfuly delete' }
+            return {
+                status: 204,
+                message: 'successfuly delete'
+            }
         } catch (err) {
-            return { status: 500, message: 'server error' }
+            console.log(err)
+            return {
+                status: 500,
+                message: 'server error'
+            }
         }
     }
 }
 
-export {TopItemService}
+export { TopItemService }

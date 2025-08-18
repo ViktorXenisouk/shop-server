@@ -1,22 +1,32 @@
 import {body,param} from 'express-validator';
 
-const create = [
+export const create = [
     body('name').isString(),
     body('email').isEmail(),
     body('password').isString(),
     body('securityLvl').isNumeric(),
 ]
 
-const login = [
+export const find = [
+    body('search').optional().isString()
+]
+
+export const login = [
     body('name').isString(),
     body('password').isString(),
 ];
 
-const edit = [
+export const editByAdmin = [
+    body('name'),
+    body('password'),
+    body('email'),
+    body('imgUrl'),
+    body('securityLvl')
+]
+
+export const editMe = [
     body('name'),
     body('password'),
     body('email'),
     body('imgUrl'),
 ]
-
-export {create,login,edit}

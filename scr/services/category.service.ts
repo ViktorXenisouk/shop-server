@@ -1,11 +1,12 @@
 import Category from "../models/category.model";
-import { getMergedTags, buildTree, flattenCatalogTree } from "../utils/catalogUtils";
-import { sanitizePayload } from "../utils/sanitizePayload";
-import { parseTags } from "../utils/parseTags";
+import { getMergedTags, buildTree, flattenCatalogTree, flattenCatalogTreeMultiple } from "../utils/catalog.util";
+import { sanitizePayload } from "../utils/sanitize-payload";
+import { parseTags } from "../utils/parse-tags";
+import { ICategory } from "../types/category.type";
 
 class CategoryService {
 
-    public async GetCategoryById(id: string) {
+    public async GetById(id: string) {
         try {
             const category = await Category.findById(id)
 
@@ -16,7 +17,7 @@ class CategoryService {
         }
     }
 
-    public async GetCategoryBySubPath(subPath: string) {
+    public async GetBySubPath(subPath: string) {
         try {
             const category = await Category.findOne({ fullPath: subPath }).lean()
 
@@ -61,7 +62,7 @@ class CategoryService {
         }
     }
 
-    public async updateCategory(id: string, payload: { path: string, name: string, discription: string, tags: string[] }) {
+    public async Edit(id: string, payload: { path: string, name: string, discription: string, tags: string[] }) {
         const cat = await Category.findById(id);
         if (!cat) {
             return { success: false, status: 500, message: 'can not find your cat' };
@@ -90,7 +91,7 @@ class CategoryService {
         return { success: true, status: 200, message: 'okey' };
     }
 
-    public async getCategoryByFullPath(fullPath: string) {
+    public async GetByFullPath(fullPath: string) {
         try {
             const category = await Category.findOne({ fullPath });
 
@@ -104,7 +105,7 @@ class CategoryService {
         }
     }
 
-    public async DeleteCategoryByFullPath(fullPath: string) {
+    public async DeleteByFullPath(fullPath: string) {
         try {
             const category = await Category.findOneAndDelete({ fullPath });
 
@@ -118,24 +119,23 @@ class CategoryService {
         }
     }
 
-    public async getCategoryTree() {
+    public async GetCategoryTree() {
         const categories = await Category.find({ isDeleted: { $ne: true } }).lean();
 
+
         const simplified = categories.map(cat => ({
-            id: cat._id,
             name: cat.name,
             path: cat.path,
             fullPath: cat.fullPath,
             parentPath: cat.parentPath,
-            discription: cat.discription,
-            imgUrl: cat.imgUrl
         }));
 
         const tree = buildTree(simplified);
+
         return { success: true, status: 200, message: 'build tree', data: tree }
     }
 
-    public async uploadCatalogJson(jsonTree: any[]) {
+    public async UploadCatalogJson(jsonTree: ICategory[]) {
         try {
             if (!Array.isArray(jsonTree)) {
                 return { success: false, status: 400, message: "JSON должен быть массивом." };
@@ -157,7 +157,29 @@ class CategoryService {
         }
     }
 
-    public async createCategory(payback: { name: string, path: string, discription: string, tags: { [categoryName: string]: string[] }, parentPath?: string, fullpath?: string, imgUrl: string }) {
+    public async UploadCatalogJsonMultiple(jsonTree: any[]) {
+        try {
+            if (!Array.isArray(jsonTree)) {
+                return { success: false, status: 400, message: "JSON должен быть массивом." };
+            }
+
+            const flattened = flattenCatalogTreeMultiple(jsonTree);
+
+            for (const item of flattened) {
+                await Category.findOneAndUpdate(
+                    { fullPath: item.fullPath },
+                    { $set: item },
+                    { upsert: true, new: true }
+                );
+            }
+            return { success: true, status: 200, message: "Каталог успешно загружен и обновлён." }
+        }
+        catch (err) {
+            return { success: false, status: 500, message: 'some error' }
+        }
+    }
+
+    public async Create(payback: { name: string, path: string, discription: string, tags: { [categoryName: string]: string[] }, parentPath?: string, fullpath?: string, imgUrl: string }) {
         try {
             if (!payback.name || !payback.path) {
                 return { success: false, status: 400, message: "Имя и путь категории обязательны." };
@@ -165,7 +187,7 @@ class CategoryService {
 
             if (payback.parentPath == '#root') {
                 payback.fullpath = payback.path
-                payback.parentPath = undefined
+                delete payback.parentPath
             }
             else {
                 payback.fullpath = (payback.parentPath + '/' + payback.path)
@@ -185,7 +207,7 @@ class CategoryService {
         }
     }
 
-    public async deleteCategory(path: string) {
+    public async Delete(path: string) {
         if (!path) return { success: false, status: 400, message: "Путь категории обязателен." }
         try {
             const category = await Category.findOneAndDelete({ fullPath: path });
@@ -200,7 +222,7 @@ class CategoryService {
         }
     }
 
-    public async getTags(fullPath: string) {
+    public async GetTags(fullPath: string) {
         try {
             const tags = await getMergedTags(fullPath)
 

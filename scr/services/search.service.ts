@@ -1,29 +1,29 @@
-import { sanitizePayload } from "../utils/sanitizePayload";
 import AllowedRequestModel from "../models/allowed-requests.model";
 import ProductModel from "../models/product.model";
 import CategoryModel from "../models/category.model";
+import { sanitizePayload } from "../utils/sanitize-payload";
 
-const limit = 5
+const limit = 12
 
 class SearchService {
-    public async find(search: string) {
+    public async Find(search: string) {
         try {
             const universalFilter = { $regex: search, $options: 'i' }
 
             const result = [] as { type: string, url: string, name: string, icon: string }[]
 
-            const products = await ProductModel.find({ $or: [{ name: universalFilter }, { discription: universalFilter }] })
+            let limitOfItems = limit
 
-            products.forEach((value) => {
-                const type = 'product'
-                const name = value.name
-                const url = `/product/${value.id}`
-                const icon = value.imgs[0].url ?? ''
+            const categories = await CategoryModel.find({
+                $or: [
+                    { fullPath: universalFilter },
+                    { name: universalFilter },
+                    { path: universalFilter },
+                    { discription: universalFilter }
+                ]
+            }).limit(limit)
 
-                result.push({ type, name, url, icon })
-            })
-
-            const categories = await CategoryModel.find({ $or: [{ fullPath: universalFilter }, { name: universalFilter }, { path: universalFilter }, { discription: universalFilter }] })
+            limitOfItems - categories.length
 
             categories.forEach((value) => {
                 const type = 'category'
@@ -34,14 +34,39 @@ class SearchService {
                 result.push({ type, name, url, icon })
             })
 
-            return { status: 200, message: 'good', data: result }
+
+            const products = await ProductModel.find({
+                $or: [
+                    { name: universalFilter },
+                    { discription: universalFilter }
+                ]
+            }).limit(limitOfItems)
+
+            products.forEach((value) => {
+                const type = 'product'
+                const name = value.name
+                const url = `/product/${value.id}`
+                const icon = value.imgs[0].url ?? ''
+
+                result.push({ type, name, url, icon })
+            })
+
+            return {
+                status: 200,
+                message: 'good',
+                data: result
+            }
         }
         catch (err) {
-            return { status: 500, message: 'server error' }
+            console.error(err)
+            return {
+                status: 500,
+                message: 'server error'
+            }
         }
     }
 
-    public async auxiliaryQueries(search:string ) {
+    public async AuxiliaryQueries(search?: string) {
         try {
             const filter = {} as any
 
@@ -51,16 +76,23 @@ class SearchService {
 
             const data = await AllowedRequestModel.find(filter).limit(limit).lean()
 
-            return { status: 200, data: data }
+            return {
+                status: 200,
+                data: data
+            }
         }
         catch (err) {
-            return { status: 500, message: 'server error' }
+            console.log(err)
+            return {
+                status: 500,
+                message: 'server error'
+            }
         }
     }
 
-    public async createOrUpdate(payload: { name?: string, type?: string, icon: string, url?: string }) {
+    public async CreateOrUpdate(payload: { name?: string, type?: string, icon: string, url?: string }) {
         try {
-            const sanitizedPayload = sanitizePayload(payload) as { name?: string, type?: string, icon: string, url?: string }
+            const sanitizedPayload = sanitizePayload(payload) as { name: string, type?: string, icon: string, url?: string }
 
             await AllowedRequestModel.findByIdAndUpdate({ name: sanitizedPayload.name },
                 { ...sanitizedPayload, isAutoCreated: false },
@@ -69,30 +101,48 @@ class SearchService {
                     upsert: true,
                 })
 
-            return { status: 200, message: 'all updateted' }
+            return {
+                status: 200,
+                message: 'all updateted'
+            }
         }
         catch (err) {
-            return { status: 500, message: 'some error' }
+            return {
+                status: 500,
+                message: 'some error'
+            }
         }
     }
 
-    public async delete(payload: { name?: string, type?: string, isAutoCreated?: boolean }) {
+    public async Delete(payload: { name?: string, type?: string, isAutoCreated?: boolean }) {
         try {
             const sanitizedPayload = sanitizePayload(payload)
             await AllowedRequestModel.deleteMany(sanitizedPayload)
-            return { status: 200, message: 'delete many' }
+            return {
+                status: 203, message: 'delete many'
+            }
         }
         catch (err) {
-            return { status: 500, message: 'server error' }
+            console.error(err)
+            return {
+                status: 500,
+                message: 'server error'
+            }
         }
     }
 
-    public async autoCreate() {
+    public async AutoCreate() {
         try {
             await autoCreate()
-            return { status: 200, message: 'success' }
+
+            return {
+                status: 200,
+                message: 'success'
+            }
         }
+
         catch (err) {
+            console.error(err)
             return { status: 500, message: 'server error' }
         }
     }

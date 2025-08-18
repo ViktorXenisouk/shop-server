@@ -19,7 +19,8 @@ const ContentBlockSchema = new mongoose.Schema<IContentBlock>(
   { _id: false }
 );
 
-const json = {
+const ArticleSchema = new mongoose.Schema(
+{
     title: { type: String, required: true },
     slug: { type: String, required: true, unique: true },
     summary: String,
@@ -28,10 +29,7 @@ const json = {
     tags: [String],
     publishedAt: Date,
     author: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-}
-
-const ArticleSchema = new mongoose.Schema(
-json,
+},
   { timestamps: true }
 );
 

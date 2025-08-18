@@ -2,6 +2,9 @@ import { RequestHandler } from "express";
 import Category from "../models/category.model";
 import Product from "../models/product.model";
 import { faker } from '@faker-js/faker';
+import productModel from "../models/product.model";
+
+import { ICategory } from "../types/category.type";
 
 const InitProducts: RequestHandler = async (req, res): Promise<any> => {
   await generateProductsForCategories(5)
@@ -15,8 +18,10 @@ const generateTags: RequestHandler = async (req, res) => {
     const fullpath = product.category
     const cat = await Category.findOne({ fullPath: fullpath })
     if (cat) {
-      cat.tags = cat.tags || {} as Map<string, any>;
-      cat.tags.set(`category${i}`, {tags:product.tags,type:'horizontal'});
+      cat.filter = cat.filter || {} as Map<string, any>;
+      const props : Map<string, any> = new Map()
+      props.set('tags',product.tags)
+      cat.filter.set(`category${i}`, {variant:'tags-vertical',props:props});
 
       cat.save()
     }
@@ -25,14 +30,15 @@ const generateTags: RequestHandler = async (req, res) => {
   res.json({ success: true })
 }
 
-function generateProduct(categoryPath: string): any {
+function generateProduct(cat:ICategory): any {
+  const categoryPath = cat.fullPath
   const productName = faker.commerce.productName() + ' ' + faker.string.uuid().slice(0, 6);
-  const url = { url: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e', name: 'some image' }
+  const url = { url: 'https://res.cloudinary.com/djdxksokm/image/upload/v1753359255/my-pet-project/whooqmb8vkdtsw7dqxrh.png', name: 'some image' }
 
   return {
     name: productName,
     discription: faker.commerce.productDescription(),
-    tags: [faker.commerce.productAdjective(), faker.commerce.department()],
+    tags: [],
     category: categoryPath,
     imgs: [url, url, url],
     numberOfProductsSold: faker.number.int({ min: 0, max: 1000 }),
@@ -44,7 +50,7 @@ function generateProduct(categoryPath: string): any {
 };*/
 }
 
-async function generateProductsForCategories(productsPerCategory = 10) {
+async function generateProductsForCategories(productsPerCategory = 10) { /// asd
   const categories = await Category.find({ isDeleted: false });
   console.log(`Found ${categories.length} categories`);
 
@@ -52,7 +58,7 @@ async function generateProductsForCategories(productsPerCategory = 10) {
 
   for (const cat of categories) {
     for (let i = 0; i < productsPerCategory; i++) {
-      productsToInsert.push(generateProduct(cat.fullPath));
+      productsToInsert.push(generateProduct(cat));
     }
   }
 
@@ -61,4 +67,14 @@ async function generateProductsForCategories(productsPerCategory = 10) {
   console.log('✅ Products inserted successfully!');
 }
 
-export { InitProducts, generateTags }
+async function GenerateImages(req:any,res:any){
+const products = await productModel.find()
+
+products.forEach((item) => {
+  item.imgs = [{name:'computer',url:'https://res.cloudinary.com/djdxksokm/image/upload/v1753359255/my-pet-project/whooqmb8vkdtsw7dqxrh.png'}]
+  item.save()
+})
+res.send('good')
+}
+
+export { InitProducts, generateTags,GenerateImages }

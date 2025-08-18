@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import { IProduct,IContentBlock } from "../types/product";
+import mongoose,{model} from "mongoose";
+import { IProduct, IContentBlock } from "../types/product";
 
 type D = { [name: string]: { [tagName: string]: any; } }
 
@@ -27,58 +27,61 @@ const ContentBlockSchema = new mongoose.Schema<IContentBlock>(
 const ProductSchema = new mongoose.Schema<IProduct>(
     {
         name: {
-        type: String,
-        required: true,
-        unique: true
+            type: String,
+            required: true,
+            unique: true
+        },
+        discription: {
+            type: String,
+            required: true,
+        },
+        tags: {
+            type: [String],
+            default: [],
+        },
+        category: {
+            type: String,
+            required: true
+        },
+        imgs: {
+            type: [{ name: String, url: String }],
+            default: []
+        },
+        price: {
+            type: Number,
+            default: 0,
+        },
+        superTag: {
+            type: String,
+            enum: ['best', 'value', 'popular', 'new'],
+            default: null,
+        },
+        numberOfProductsSold: {
+            type: Number,
+            default: 0,
+        },
+        similarProductIds: {
+            type: [mongoose.Schema.ObjectId],
+            default: []
+        },
+        comments: {
+            type: [{ id: mongoose.Schema.ObjectId, text: String, rate: Number }],
+            default: [],
+        },
+        blocks: {
+            type: [{ type: ContentBlockSchema }],
+            required: false
+        },
+        parameters: { type: ParametersSchema, required: false },
+        media: {
+            type: [{ type: String, url: String }],
+            default: []
+        }
     },
-    discription: {
-        type: String,
-        required: true,
-    },
-    tags: {
-        type: [String],
-        default: [],
-    },
-    category: {
-        type: String,
-        required: true
-    },
-    imgs: {
-        type: [{ name: String, url: String }],
-        default: []
-    },
-    price: {
-        type: Number,
-        default: 0,
-    },
-    superTag: {
-        type: String,
-        enum: ['best', 'value', 'popular', 'new'],
-        default: null,
-    },
-    numberOfProductsSold: {
-        type: Number,
-        default: 0,
-    },
-    similarProductIds: {
-        type: [mongoose.Schema.ObjectId],
-        default: []
-    },
-    comments: {
-        type: [{ id: mongoose.Schema.ObjectId, text: String, rate: Number }],
-        default: [],
-    },
-    blocks: {
-        type: [{ type: ContentBlockSchema }],
-        required: false
-    },
-    parameters: { type: ParametersSchema, required: false },
-    media: {
-        type: [{ type: String, url: String }],
-        default: []
-    }
-    }, {
-    timestamps: { createdAt: true, updatedAt: false },
-})
+    {
+        timestamps: {
+            createdAt: true, updatedAt: false
+        },
+    })
 
-export default mongoose.model('Product', ProductSchema);
+export default model('Product', ProductSchema);

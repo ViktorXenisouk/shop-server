@@ -1,27 +1,25 @@
 import mongoose from "mongoose";
+import { AllowedRequests } from "../types/allowed-requests.type";
 
-// types = product categorie text
-
-const json = {
-    name: {
-        type: String,
+const AllowedRequestsSchema = new mongoose.Schema<AllowedRequests>(
+    {
+        name: {
+            type: String,
+        },
+        url: {
+            type: String,
+            requred: true
+        },
+        icon: {
+            type: String, required: false
+        },
+        type: {
+            type: String, default: 'product', enum: ['product', 'category', 'article']
+        },
+        isAutoCreated: {
+            type: Boolean, default: true,
+        }
     },
-    url: {
-        type: String,
-        requred: true
-    },
-    icon: {
-        type: String, required: false
-    },
-    type: {
-        type: String, default: 'product'
-    },
-    isAutoCreated: {
-        type: Boolean, default: true,
-    }
-}
-
-const AllowedRequestsSchema = new mongoose.Schema(json,
     {
         timestamps: false,
         id: true

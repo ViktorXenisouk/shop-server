@@ -4,38 +4,38 @@ import { SearchService } from "../services/search.service";
 class SearchController {
     constructor(private searchService: SearchService) { }
 
-    public find: RequestHandler = async (req, res) => {
+    public Find: RequestHandler = async (req, res) => {
         const search = decodeURIComponent(req.params.search as string);
 
-        const { status, ...other } = await this.searchService.find(search)
+        const { status, ...other } = await this.searchService.Find(search)
 
         res.status(status).json({ ...other })
     }
 
-    public auxiliaryQueries: RequestHandler = async (req, res) => {
+    public AuxiliaryQueries: RequestHandler = async (req, res) => {
         const search = req.query.search as string
 
-        const { status, ...other } = await this.searchService.auxiliaryQueries(search)
+        const { status, ...other } = await this.searchService.AuxiliaryQueries(search)
 
         res.status(status).json({ ...other })
     }
-    public createOrUpdate: RequestHandler = async (req, res) => {
+    public CreateOrUpdate: RequestHandler = async (req, res) => {
         const payload = req.body
 
-        const { status, ...other } = await this.searchService.createOrUpdate(payload)
+        const { status, ...other } = await this.searchService.CreateOrUpdate(payload)
 
         res.status(status).json({ ...other })
     }
-  public delete: RequestHandler = async (req, res) => {
+  public Delete: RequestHandler = async (req, res) => {
         const payload = req.body
 
-        const { status, ...other } = await this.searchService.delete(payload)
+        const { status, ...other } = await this.searchService.Delete(payload)
 
         res.status(status).json({ ...other })
     }
 
-    public autoCreate: RequestHandler = async (req, res) => {
-        const { status, ...other } = await this.searchService.autoCreate()
+    public AutoCreate: RequestHandler = async (req, res) => {
+        const { status, ...other } = await this.searchService.AutoCreate()
 
         res.status(status).json({ ...other })
     }

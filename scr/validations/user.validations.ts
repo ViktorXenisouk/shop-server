@@ -1,4 +1,4 @@
-import {body} from 'express-validator';
+import {body,param} from 'express-validator';
 import { IsStrongPasswordOptions } from 'express-validator/lib/options';
 
 const passwordOptions : IsStrongPasswordOptions = {
@@ -7,33 +7,24 @@ const passwordOptions : IsStrongPasswordOptions = {
     minUppercase:1
 }
 
-const login = [
-    body('email').isString(),
-    body('password').isLength({min : 5}),
-];
+const updateBasketOrFavourite = [
 
-const register = [
-    body('email').isEmail(),
-    body('username').isLength({min : 3}),
-    body('password').isLength({min: 4}),
-];
+]
 
-const editMe = [
+export const editMe = [
     body('email').isEmail(),
     body('username').isLength({min : 3}),
     body('password').isStrongPassword(passwordOptions),
 ]
 
-const edit = [
+export const edit = [
     body('id').isString(),
     body('email').isEmail(),
     body('username').isLength({min : 3}),
     body('password').isStrongPassword(passwordOptions),
 ]
 
-const block = [
+export const block = [
     body('id').isString(),
     body('blocked').isBoolean(),
 ]
-
-export {login,register,editMe,edit,block}

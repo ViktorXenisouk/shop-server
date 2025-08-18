@@ -4,18 +4,18 @@ import { CategoryService } from "../services/category.service"
 class CategoryController {
   constructor(private categoryService: CategoryService) { }
 
-  public GetCategoryById: RequestHandler = async (req, res) => {
+  public GetById: RequestHandler = async (req, res) => {
     const id = req.params.id
 
-    const { status, ...other } = await this.categoryService.GetCategoryById(id)
+    const { status, ...other } = await this.categoryService.GetById(id)
 
     res.status(status).json({ ...other })
   }
 
-  public GetCategoryBySubPath: RequestHandler = async (req, res) => {
+  public GetBySubPath: RequestHandler = async (req, res) => {
     const subPath = req.params.subPath as string
 
-    const { status, ...other } = await this.categoryService.GetCategoryBySubPath(subPath)
+    const { status, ...other } = await this.categoryService.GetBySubPath(subPath)
 
     res.status(status).json({ ...other })
   }
@@ -27,15 +27,15 @@ class CategoryController {
     res.status(status).json({ ...other })
   }
 
-  public UpdateCategory: RequestHandler = async (req, res) => {
+  public Edit: RequestHandler = async (req, res) => {
     const id = req.params.id
 
-    const { status, ...other } = await this.categoryService.updateCategory(id, req.body)
+    const { status, ...other } = await this.categoryService.Edit(id, req.body)
 
     res.status(status).json({ ...other })
   }
 
-  public getTags: RequestHandler = async (req, res) => {
+  public GetTags: RequestHandler = async (req, res) => {
 
     const paths = req.params['path'] as any;
     let fullPath = ''
@@ -46,37 +46,45 @@ class CategoryController {
       fullPath = paths
     }
 
-    const { status, ...other } = await this.categoryService.getTags(fullPath)
+    const { status, ...other } = await this.categoryService.GetTags(fullPath)
 
     res.status(status).json({ ...other })
   }
 
-  public getCategoryTree: RequestHandler = async (req, res) => {
+  public GetCategoryTree: RequestHandler = async (req, res) => {
 
-    const { status, ...other } = await this.categoryService.getCategoryTree()
+    const { status, ...other } = await this.categoryService.GetCategoryTree()
 
     res.status(status).json({ ...other })
   }
 
-  public uploadCatalogJson: RequestHandler = async (req, res) => {
+  public UploadCatalogJson: RequestHandler = async (req, res) => {
     const jsonTree = req.body;
 
-    const { status, ...other } = await this.categoryService.uploadCatalogJson(jsonTree)
+    const { status, ...other } = await this.categoryService.UploadCatalogJson(jsonTree)
 
     res.status(status).json({ ...other })
   }
 
-  public createCategory: RequestHandler = async (req, res) => {
+    public UploadCatalogJsonMultiple: RequestHandler = async (req, res) => {
+    const jsonTree = req.body;
 
-    const { status, ...other } = await this.categoryService.createCategory(req.body)
+    const { status, ...other } = await this.categoryService.UploadCatalogJsonMultiple(jsonTree)
 
     res.status(status).json({ ...other })
   }
 
-  public deleteCategory: RequestHandler = async (req, res) => {
+  public Create: RequestHandler = async (req, res) => {
+
+    const { status, ...other } = await this.categoryService.Create(req.body)
+
+    res.status(status).json({ ...other })
+  }
+
+  public Delete: RequestHandler = async (req, res) => {
     const { path } = req.params;
 
-    const { status, ...other } = await this.categoryService.deleteCategory(path)
+    const { status, ...other } = await this.categoryService.Delete(path)
 
     res.status(status).json({ ...other })
   }

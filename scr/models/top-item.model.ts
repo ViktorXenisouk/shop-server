@@ -1,6 +1,7 @@
-import mongoose, { Schema, model } from 'mongoose';
+import mongoose, { model } from 'mongoose';
+import { TopItem } from '../types/top-item.type';
 
-const TopItemSchema = new Schema({
+const TopItemSchema = new mongoose.Schema<TopItem>({
   type: {
     type: String,
     required: true,
@@ -14,10 +15,6 @@ const TopItemSchema = new Schema({
     type: String,
     required: true
   },
-  category: {
-    type: String,
-    default: ''
-  },
   imageUrl: {
     type: String,
     required: true,
@@ -28,7 +25,7 @@ const TopItemSchema = new Schema({
   },
   priority: {
     type: Number,
-    default: 0, // по умолчанию наименьший приоритет
+    default: 0,
   },
 });
 

@@ -33,7 +33,6 @@ const getAdminLevel = async (req: Request & any): Promise<{ success: boolean, le
             }
         }
     } catch (err) {
-        console.log(err);
         return {
             level:-1,
             success: false,
@@ -50,7 +49,7 @@ const checkAdminLevel = async (req:Request&any, res:Response, next:NextFunction,
         return
     }
     else{
-        res.status(400).json({success:false,message:result.message})
+        res.status(403).json({message:result.message})
     }
 }
 
